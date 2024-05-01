@@ -21,7 +21,7 @@ class TournamentList extends StatelessWidget {
               itemCount: snapshot.data?.length,
               itemBuilder: (context, index) {
                 return ListTile(
-                  title: Text(snapshot.data?[index]['name']),
+                  title: Text(snapshot.data?[index]['title']),
                   // Другие поля, которые вы хотите отобразить для каждого турнира
                 );
               },
