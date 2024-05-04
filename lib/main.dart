@@ -30,31 +30,28 @@ class GameList extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return FutureBuilder<List<dynamic>>(
-      future: fetchGames(), // Используем функцию fetchGames из api_service.dart
+      future: fetchGames(),
       builder: (context, snapshot) {
         if (snapshot.hasData) {
-          // Если есть данные, отобразим список игр
           return ListView.builder(
             itemCount: snapshot.data?.length,
             itemBuilder: (context, index) {
+              var game = snapshot.data?[index];
               return Card(
                 margin: const EdgeInsets.all(10.0),
                 elevation: 5.0,
                 child: ListTile(
+                  leading: game['image'] != null ? Image.network(game['image']) : Icon(Icons.gamepad),
                   title: Text(
-                    snapshot.data?[index]['title'],
+                    game['title'],
                     style: const TextStyle(
                       fontWeight: FontWeight.bold,
                     ),
                   ),
-                  subtitle: Text(snapshot.data?[index]['description']),
-                  // Добавляем стрелочку справа для перехода
+                  subtitle: Text(game['description']),
                   trailing: Icon(Icons.arrow_forward),
-                  // Переходим на экран с подробной информацией об игре при нажатии
                   onTap: () {
-                    // Получаем ID выбранной игры
-                    int gameId = snapshot.data?[index]['id'];
-                    // Переходим на экран с турнирами для выбранной игры
+                    int gameId = game['id'];
                     Navigator.push(
                       context,
                       MaterialPageRoute(
@@ -67,11 +64,9 @@ class GameList extends StatelessWidget {
             },
           );
         } else if (snapshot.hasError) {
-          // Если произошла ошибка, отобразим ее
           return Text("${snapshot.error}");
         }
 
-        // Показываем индикатор загрузки, пока данные загружаются
         return const Center(
           child: CircularProgressIndicator(),
         );
@@ -79,3 +74,4 @@ class GameList extends StatelessWidget {
     );
   }
 }
+
