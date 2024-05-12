@@ -1,6 +1,10 @@
+// main.dart
 import 'package:flutter/material.dart';
-import 'api_service.dart'; // Подключаем файл с функцией fetchGames
-import 'tournament_list.dart'; // Подключаем файл со списком турниров
+import 'api_service.dart';
+import 'tournament_list.dart';
+import 'user_register.dart';
+import 'user_login.dart'; // Импортируем файл с экраном авторизации
+import 'package:shared_preferences/shared_preferences.dart'; // Импортируем пакет для работы с SharedPreferences
 
 void main() {
   runApp(const GameApp());
@@ -14,11 +18,71 @@ class GameApp extends StatelessWidget {
     return MaterialApp(
       title: 'Game App',
       theme: ThemeData.dark(), // Используем темную тему
-      home: Scaffold(
-        appBar: AppBar(
-          title: const Text('Game List'),
-        ),
-        body: GameList(), // Добавляем виджет GameList в качестве основного контента
+      home: const BottomNav(), // Устанавливаем BottomNav как домашний экран
+    );
+  }
+}
+
+class BottomNav extends StatefulWidget {
+  const BottomNav({Key? key}) : super(key: key);
+
+  @override
+  _BottomNavState createState() => _BottomNavState();
+}
+
+class _BottomNavState extends State<BottomNav> {
+  int _selectedIndex = 0;
+  late bool _isAuthenticated; // Флаг, указывающий на авторизацию пользователя
+
+  @override
+  void initState() {
+    super.initState();
+    _checkAuthStatus(); // Проверяем статус авторизации при инициализации виджета
+  }
+
+  // Функция для проверки статуса авторизации
+  void _checkAuthStatus() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    bool isAuthenticated = prefs.getBool('isAuthenticated') ?? false; // Получаем статус из SharedPreferences, по умолчанию false
+    setState(() {
+      _isAuthenticated = isAuthenticated;
+    });
+  }
+
+  // Функция для изменения выбранного индекса
+  void _onItemTapped(int index) {
+    setState(() {
+      _selectedIndex = index;
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Game App'),
+      ),
+      body: IndexedStack(
+        index: _selectedIndex,
+        children: [
+          GameList(), // Экран с играми
+          _isAuthenticated ? const GameList() : const RegisterOrLoginScreen(), // Если пользователь авторизован, показываем экран с играми, иначе - экран регистрации или авторизации
+        ],
+      ),
+      bottomNavigationBar: BottomNavigationBar(
+        items: const <BottomNavigationBarItem>[
+          BottomNavigationBarItem(
+            icon: Icon(Icons.games),
+            label: 'Games',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.person),
+            label: 'Register/Login',
+          ),
+        ],
+        currentIndex: _selectedIndex,
+        selectedItemColor: Colors.blueAccent,
+        onTap: _onItemTapped,
       ),
     );
   }
@@ -72,6 +136,15 @@ class GameList extends StatelessWidget {
         );
       },
     );
+  }
+}
+
+class RegisterOrLoginScreen extends StatelessWidget {
+  const RegisterOrLoginScreen({Key? key}) : super(key: key); // Добавляем ключ
+
+  @override
+  Widget build(BuildContext context) {
+    return const LoginScreen(); // Показываем экран авторизации по умолчанию
   }
 }
 
