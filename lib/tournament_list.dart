@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'api_service.dart'; // Подключаем файл с функцией fetchTournamentsByGame
+import 'services/api_service.dart'; // Подключаем файл с функцией fetchTournamentsByGame
 
 class TournamentList extends StatelessWidget {
   final int gameId;
