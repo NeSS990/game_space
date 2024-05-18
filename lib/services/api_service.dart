@@ -136,6 +136,36 @@ Future<ApiResponse> getUserDetails() async{
   }
   return apiResponse;
 }
+Future<ApiResponse> joinTournament(int tournamentId, int userId) async {
+  ApiResponse apiResponse = ApiResponse(); // Создаем экземпляр ApiResponse
+
+  try {
+    final response = await http.post(
+      Uri.parse('http://127.0.0.1:8001/api/tournaments/$tournamentId/participation'),
+      headers: {'Accept': 'application/json'},
+      body: {'user_id': '$userId', 'tournament_id': '$tournamentId'}, // Предполагаемый ID пользователя
+    );
+
+    switch (response.statusCode) {
+      case 200:
+        apiResponse.data = {'success': 'Participation created successfully'}; // Успешный ответ от сервера
+        break;
+      case 409:
+        apiResponse.error = 'Participation already exists'; // Ошибка при существующей записи
+        break;
+      case 500:
+        apiResponse.error = 'Failed to add Participation'; // Ошибка сервера
+        break;
+      default:
+        apiResponse.error = 'Something went wrong'; // Общая ошибка
+        break;
+    }
+  } catch (e) {
+    apiResponse.error = 'Server error'; // Ошибка при обращении к серверу
+  }
+
+  return apiResponse; // Возвращаем объект ApiResponse
+}
 Future<ApiResponse> fetchTournamentDetails(int tournamentId) async {
   ApiResponse apiResponse = ApiResponse();
   try {
