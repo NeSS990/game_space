@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
-import 'dart:convert';
-
-import '../services/api_service.dart'; // Импорт функции fetchTournamentsByGame
+import '../screens/tournament.dart'; // Импорт нового экрана
+import '../services/api_service.dart';
 
 class TournamentsScreen extends StatefulWidget {
   final int gameId;
@@ -42,11 +40,19 @@ class _TournamentsScreenState extends State<TournamentsScreen> {
       body: ListView.builder(
         itemCount: tournaments.length,
         itemBuilder: (BuildContext context, int index) {
+          final tournament = tournaments[index]; // Получаем текущий турнир
           return ListTile(
-            title: Text(tournaments[index]['title']),
-            subtitle: Text('Date: ${tournaments[index]['DateStart']}'),
+            title: Text(tournament['title']),
+            subtitle: Text('Date: ${tournament['DateStart']}'),
             onTap: () {
-              // Действия при нажатии на турнир
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => TournamentDetailScreen(
+                    tournamentId: tournament['id'] as int, // Приведение типа к int
+                  ),
+                ),
+              );
             },
           );
         },

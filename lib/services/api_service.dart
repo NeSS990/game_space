@@ -136,6 +136,27 @@ Future<ApiResponse> getUserDetails() async{
   }
   return apiResponse;
 }
+Future<ApiResponse> fetchTournamentDetails(int tournamentId) async {
+  ApiResponse apiResponse = ApiResponse();
+  try {
+    final response = await http.get(Uri.parse('$tournamentsUrl/$tournamentId'));
+
+    switch (response.statusCode) {
+      case 200:
+        apiResponse.data = jsonDecode(response.body);
+        break;
+      case 404:
+        apiResponse.error = 'Tournament not found';
+        break;
+      default:
+        apiResponse.error = somethingWentWrong;
+        break;
+    }
+  } catch (e) {
+    apiResponse.error = serverError;
+  }
+  return apiResponse;
+}
 //get token
 Future<String> getToken() async{
   SharedPreferences pref = await SharedPreferences.getInstance();
