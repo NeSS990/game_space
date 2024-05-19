@@ -4,6 +4,7 @@ import 'package:game_space/screens/games.dart';
 import '../services/api_service.dart';
 import '../models/api_response.dart';
 import 'login.dart';
+import 'profile_screen.dart';
 
 class Home extends StatelessWidget {
   @override
@@ -61,17 +62,7 @@ class Home extends StatelessWidget {
               child: Text('Принять участие', style: TextStyle(color: Colors.white)),
             ),
             SizedBox(height: 20),
-            ElevatedButton(
-              onPressed: () {
-                // Действия при нажатии на кнопку "Команды"
-              },
-              style: ElevatedButton.styleFrom(
-                primary: Color(0xFF511E97),
-                onPrimary: Colors.white,
-              ),
-              child: Text('Команды', style: TextStyle(color: Colors.white)),
-            ),
-            SizedBox(height: 20),
+            
             FutureBuilder(
               future: getUserDetails(),
               builder: (BuildContext context, AsyncSnapshot<ApiResponse> snapshot) {
@@ -101,7 +92,10 @@ class Home extends StatelessWidget {
                       children: [
                         ElevatedButton(
                           onPressed: () {
-                            // Действия при нажатии на кнопку "Профиль"
+                             Navigator.push(
+                              context,
+                              MaterialPageRoute(builder: (context) => ProfileScreen()), // Переход на экран профиля
+                            );
                           },
                           style: ElevatedButton.styleFrom(
                             primary: Color(0xFF511E97),
@@ -113,6 +107,10 @@ class Home extends StatelessWidget {
                         ElevatedButton(
                           onPressed: () {
                             logout(); // Вызов функции logout
+                            Navigator.pushReplacement(
+                              context,
+                              MaterialPageRoute(builder: (context) => Home()), 
+                            );
                           },
                           style: ElevatedButton.styleFrom(
                             primary: Color(0xFF511E97),

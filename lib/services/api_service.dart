@@ -72,7 +72,33 @@ Future<ApiResponse> registerUser(String name, String email, String password, Str
   }
   return apiResponse; // Возвращаем объект ApiResponse
 }
-
+Future<ApiResponse> fetchUserTournaments(int userId) async {
+  ApiResponse apiResponse = ApiResponse();
+  try {
+    String token = await getToken();
+    final response = await http.get(
+      Uri.parse('http://gamespacemobile.ru/public/api/user/$userId/tournaments'),
+      headers: {
+        'Accept': 'application/json',
+        'Authorization': 'Bearer $token',
+      },
+    );
+    switch (response.statusCode) {
+      case 200:
+        apiResponse.data = jsonDecode(response.body);
+        break;
+      case 403:
+        apiResponse.error = jsonDecode(response.body)['message'];
+        break;
+      default:
+        apiResponse.error = somethingWentWrong;
+        break;
+    }
+  } catch (e) {
+    apiResponse.error = serverError;
+  }
+  return apiResponse;
+}
 Future<ApiResponse> loginUser(String email, String password) async {
   ApiResponse apiResponse = ApiResponse();
   try{
@@ -103,18 +129,18 @@ Future<ApiResponse> loginUser(String email, String password) async {
   }
   return apiResponse;
 }
-Future<ApiResponse> getUserDetails() async{
+Future<ApiResponse> getUserDetails() async {
   ApiResponse apiResponse = ApiResponse();
-  try{
+  try {
     String token = await getToken();
     final response = await http.get(
       Uri.parse(userURL),
-      headers:{
-        'Accept':'application/json',
-        'Authorization':'Bearer $token'
-      }
+      headers: {
+        'Accept': 'application/json',
+        'Authorization': 'Bearer $token',
+      },
     );
-    switch(response.statusCode){
+    switch (response.statusCode) {
       case 200:
         print('Response Body: ${response.body}');
         apiResponse.data = User.fromJson(jsonDecode(response.body));
@@ -130,12 +156,12 @@ Future<ApiResponse> getUserDetails() async{
         apiResponse.error = somethingWentWrong;
         break;
     }
-  }
-  catch(e){
+  } catch (e) {
     apiResponse.error = serverError;
   }
   return apiResponse;
 }
+
 Future<ApiResponse> joinTournament(int tournamentId, int userId) async {
   ApiResponse apiResponse = ApiResponse(); // Создаем экземпляр ApiResponse
 
