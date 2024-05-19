@@ -7,7 +7,7 @@ import '../models/api_response.dart';
 import '../models/user.dart'; // Импортируем модель ApiResponse
 
   Future<List<dynamic>> fetchGames() async {
-    final response = await http.get(Uri.parse('http://127.0.0.1:8001/api/games'));
+    final response = await http.get(Uri.parse('https://gamespacemobile.ru/public/api/games'));
     
     if (response.statusCode == 200) {
       // Если запрос успешен, распарсим JSON и вернем его
@@ -18,7 +18,7 @@ import '../models/user.dart'; // Импортируем модель ApiResponse
     }
   }
   Future<List<dynamic>> fetchTournaments() async{
-    final response = await http.get(Uri.parse('http://127.0.0.1:8001/api/tournaments'));
+    final response = await http.get(Uri.parse('http://gamespacemobile.ru/public/api/tournaments'));
     if (response.statusCode == 200) {
       // Если запрос успешен, распарсим JSON и вернем его
       return jsonDecode(response.body);
@@ -28,7 +28,7 @@ import '../models/user.dart'; // Импортируем модель ApiResponse
     }
   }
 Future<List<dynamic>> fetchTournamentsByGame(int gameId) async {
-  final response = await http.get(Uri.parse('http://127.0.0.1:8001/api/games/$gameId/tournaments'));
+  final response = await http.get(Uri.parse('http://gamespacemobile.ru/public/api/games/$gameId/tournaments'));
   
   if (response.statusCode == 200) {
     // Если запрос успешен, распарсим JSON и вернем его
@@ -141,7 +141,7 @@ Future<ApiResponse> joinTournament(int tournamentId, int userId) async {
 
   try {
     final response = await http.post(
-      Uri.parse('http://127.0.0.1:8001/api/tournaments/$tournamentId/participation'),
+      Uri.parse('https://gamespacemobile.ru/public/api/tournaments/$tournamentId/participation'),
       headers: {'Accept': 'application/json'},
       body: {'user_id': '$userId', 'tournament_id': '$tournamentId'}, // Предполагаемый ID пользователя
     );

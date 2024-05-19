@@ -76,12 +76,27 @@ class _TournamentDetailScreenState extends State<TournamentDetailScreen> {
                     style: TextStyle(fontSize: 16),
                   ),
                   SizedBox(height: 16),
-                  ElevatedButton(
+                  FutureBuilder(
+                    future: getUserDetails(), builder: (BuildContext context, AsyncSnapshot<ApiResponse> snapshot){
+                      if (snapshot.connectionState == ConnectionState.waiting) {
+                        return SizedBox.shrink();
+                      }
+                      else {
+                  if (snapshot.hasError || snapshot.data?.error != null) {
+                    return SizedBox.shrink();
+                  }
+                  else{
+                    return ElevatedButton(
                     onPressed: () {
                       _joinTournament(widget.tournamentId, _currentUser.id); // Передаем ID пользователя
                     },
                     child: Text('Join Tournament'),
+                  );
+                  }
+                      }
+                    }
                   ),
+                  
                 ],
               ),
             );

@@ -1,4 +1,4 @@
-const apiUrl = 'http://127.0.0.1:8001/api';
+const apiUrl = 'http://gamespacemobile.ru/public/api';
 const loginUrl = '$apiUrl/login';
 const registerUrl = '$apiUrl/register';
 const gamesUrl = '$apiUrl/games';
